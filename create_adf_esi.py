@@ -94,10 +94,13 @@ def write_cif(parsed_files, list_of_raw_files, filename):
     """
     coordinates = []
     number_of_atoms = []
+    atoms = []
+    periodic_table = cclib.parser.utils.PeriodicTable()
 
     for file in parsed_files:
         coordinates.extend(file.atomcoords)
         number_of_atoms.extend(file.natom)
+        atoms.extend(file.atomnos)
 
     output = []
     for i in range(0, stop=len(coordinates), step=1):
@@ -106,6 +109,13 @@ def write_cif(parsed_files, list_of_raw_files, filename):
         # Add number of atoms
         output.extend(str(number_of_atoms[i]))
         # Append atom coordinates
+        coords = coordinates[i]
+        for j, atomcoords in enumerate(coords):
+            # Take every atom, print it as:
+            # H         0.000123       0.000456      -1.234567
+            output.extend(periodic_table.element[atoms[i][j]].ljust(3) +
+                          " ".join(['{:,f}'.format(a).rjust(15)
+                                    for a in atomcoords]))
 
     with open(filename, mode='w') as output_file:
         output_file.write('\n'.join(output))
