@@ -5,7 +5,7 @@
 Script that extracts coordinates from many ADF files, in order to create an ESI
 for a paper.
 Last Update 2016-09-20 by Emmanuel Nicolas
-email emmanuel.nicolas@cea.fr
+email emmanuel.nicolas -at- cea.fr
 Requires Python3 to be installed.
 """
 
