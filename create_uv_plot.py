@@ -27,6 +27,15 @@ def main():
     list_of_raw_files = runvalues['files']
     # Parse all files
     parsed_files = parse_all_files(list_of_raw_files)
+    # Extract transitions
+
+    # Format everything
+
+    # Setup gnuplot scripts
+
+    # Run gnuplot
+
+    # Final
 
 
 def get_options():
@@ -63,6 +72,12 @@ def parse_all_files(files):
     opened_files = [cclib.io.ccopen(f) for f in files]
     parsed_files = [f.parse() for f in opened_files]
     return parsed_files
+
+
+def extract_transitions(files):
+    """
+        Extracts transitions from logfiles
+    """
 
 
 def help_description():
