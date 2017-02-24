@@ -100,6 +100,10 @@ def format_transitions(transitions):
     """
         Reformat transitions into a usable list
     """
+    transitions_converted = [[round(10E6/x[0], 2), round(x[1], 4)]
+                             for x in transitions]
+    transitions_formatted = transitions_converted
+    return transitions_formatted
 
 
 def help_description():
