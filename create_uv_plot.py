@@ -11,6 +11,7 @@ Requires Python3 to be installed.
 """
 
 import argparse
+import shlex
 import sys
 import os
 import cclib
@@ -27,15 +28,23 @@ def main():
     list_of_raw_files = runvalues['files']
     # Parse all files
     parsed_files = parse_all_files(list_of_raw_files)
-    # Extract transitions
 
-    # Format everything
+    # For every file, run the routine.
+    for file in parsed_files:
+        # Extract transitions
+        transitions = get_transitions(file)
 
-    # Setup gnuplot scripts
+        # Format everything
+        formatted_transitions = format_transitions(transitions)
 
-    # Run gnuplot
+        # Setup gnuplot script
+        gnuplot_script = write_gnuplot(formatted_transitions,
+                                       plotting_parameters)
 
-    # Final
+        # Run gnuplot
+        os.system('gnuplot {0}'.format(shlex.quote(gnuplot_script)))
+
+    print("All files have been generated.\n")
 
 
 def get_options():
@@ -45,10 +54,13 @@ def get_options():
     parser = argparse.ArgumentParser(description=help_description(),
                                      epilog=help_epilog())
     parser.formatter_class = argparse.RawDescriptionHelpFormatter
-    parser.add_argument('-s', '--sigma', type=str, dest='sigma',
-                        default='output.cif', help="File name for the output")
+    parser.add_argument('-s', '--sigma', type=float, dest='sigma',
+                        default='0.4',
+                        help="Sigma value for Gaussian broadening")
+    parser.add_argument('-w', '--window', type=str, dest='window',
+                        default='200:800', help="Limits for the wavelength")
     parser.add_argument('outFiles', type=str, nargs='+',
-                        help='The files to submit')
+                        help='The calculations to plot')
 
     try:
         args = parser.parse_args()
@@ -74,9 +86,19 @@ def parse_all_files(files):
     return parsed_files
 
 
-def extract_transitions(files):
+def get_transitions(file):
     """
         Extracts transitions from logfiles
+    """
+    energies = file.etenergies
+    oscillator_strengths = file.etoscs
+    transitions = zip(energies, oscillator_strengths)
+    return list(transitions)
+
+
+def format_transitions(transitions):
+    """
+        Reformat transitions into a usable list
     """
 
 
