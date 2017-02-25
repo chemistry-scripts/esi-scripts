@@ -36,6 +36,7 @@ def main():
 
         # Format everything
         formatted_transitions = format_transitions(transitions)
+        print("\n".join(formatted_transitions))
 
         # Setup gnuplot script
         gnuplot_script = write_gnuplot(formatted_transitions,
@@ -84,6 +85,8 @@ def parse_all_files(files):
 def get_transitions(file):
     """
         Extracts transitions from logfiles
+        Returns a list of lists, containing all [transition, oscillator
+        strength] couples, in cm-1 and unitless respectively.
     """
     energies = file.etenergies
     oscillator_strengths = file.etoscs
@@ -93,12 +96,26 @@ def get_transitions(file):
 
 def format_transitions(transitions):
     """
-        Reformat transitions into a usable list
+        Reformat transitions into a usable list, e.g. as:
+            353.02    0.2667
+            294.12    0.0000
+        In nm an unitless respectively.
     """
+    # Convert cm-1 in nm
     transitions_converted = [[round(10E6/x[0], 2), round(x[1], 4)]
                              for x in transitions]
-    transitions_formatted = transitions_converted
+    # Format the list
+    transitions_formatted = ['{:.2f}'.format(x[0]).rjust(10) +
+                             '{:.4f}'.format(x[1]).rjust(10)
+                             for x in transitions_converted]
     return transitions_formatted
+
+
+def write_gnuplot(transitions, parameters):
+    """
+        Write gnuplot files
+    """
+    return (transitions, parameters)
 
 
 def help_description():
