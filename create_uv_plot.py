@@ -24,8 +24,8 @@ def main():
         extraction, exports the results in txt files.
     """
     # Get parameters from command line
-    runvalues = get_options()
-    list_of_raw_files = runvalues['files']
+    list_of_raw_files, plotting_parameters = get_options()
+
     # Parse all files
     parsed_files = parse_all_files(list_of_raw_files)
 
@@ -68,13 +68,8 @@ def get_options():
         print(str(error))  # Print something like "option -a not recognized"
         sys.exit(2)
 
-    runvalues = dict.fromkeys(['files', 'output_format', 'output_filename'])
-    # Get values from parser
-    runvalues['files'] = [os.path.basename(x) for x in args.outFiles]
-    runvalues['output_format'] = args.output_format
-
     # Test values for validity
-    return runvalues
+    return ([os.path.basename(x) for x in args.outFiles], args.sigma)
 
 
 def parse_all_files(files):
