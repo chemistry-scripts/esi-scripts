@@ -30,9 +30,14 @@ def main():
     parsed_files = parse_all_files(list_of_raw_files)
 
     # For every file, run the routine.
-    for file in parsed_files:
+    for i, file in enumerate(parsed_files):
+        # Print filename and log information
+        print(80 * "=")
+        print("=== " + list_of_raw_files[i].filename)
+
         # Extract transitions
         transitions = get_transitions(file)
+        print("Extracted {0} transitions.".format(len(transitions)))
 
         # Format everything
         formatted_transitions = format_transitions(transitions)
