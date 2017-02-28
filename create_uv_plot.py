@@ -122,17 +122,22 @@ def write_gnuplot(transitions, parameters, filename):
     """
         Write gnuplot files
     """
+
+    # Process filename
+    basename = os.path.splitext(filename)[0]
+
     # Initialize script
     gnuplot_script = []
+    gnuplot_script.append("set terminal png\n")
+    gnuplot_script.append("set output {0}.png\n".format(basename))
 
     # Fill
 
     # Write to file
+    gnuplot_name = basename + ".plt"
 
     # return gnuplot filename
-    gnuplot_name = filename
-
-    return
+    return gnuplot_name
 
 
 def help_description():
