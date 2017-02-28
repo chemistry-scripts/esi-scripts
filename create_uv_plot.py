@@ -27,13 +27,13 @@ def main():
     list_of_raw_files, plotting_parameters = get_options()
 
     # Parse all files
-    parsed_files = parse_all_files(list_of_raw_files)
+    filenames, parsed_files = parse_all_files(list_of_raw_files)
 
     # For every file, run the routine.
     for i, file in enumerate(parsed_files):
         # Print filename and log information
         print(80 * "=")
-        print("=== " + list_of_raw_files[i].filename)
+        print("=== " + filenames[i])
 
         # Extract transitions
         transitions = get_transitions(file)
@@ -41,11 +41,12 @@ def main():
 
         # Format everything
         formatted_transitions = format_transitions(transitions)
-        print("\n".join(formatted_transitions))
 
         # Setup gnuplot script
         gnuplot_script = write_gnuplot(formatted_transitions,
-                                       plotting_parameters)
+                                       plotting_parameters,
+                                       filenames[i])
+        print("")
 
         # Run gnuplot
         os.system('gnuplot {0}'.format(shlex.quote(gnuplot_script)))
@@ -83,8 +84,9 @@ def parse_all_files(files):
         Parse all files in list of files
     """
     opened_files = [cclib.io.ccopen(f) for f in files]
+    filenames = [f.filename for f in opened_files]
     parsed_files = [f.parse() for f in opened_files]
-    return parsed_files
+    return (filenames, parsed_files)
 
 
 def get_transitions(file):
@@ -116,11 +118,21 @@ def format_transitions(transitions):
     return transitions_formatted
 
 
-def write_gnuplot(transitions, parameters):
+def write_gnuplot(transitions, parameters, filename):
     """
         Write gnuplot files
     """
-    return (transitions, parameters)
+    # Initialize script
+    gnuplot_script = []
+
+    # Fill
+
+    # Write to file
+
+    # return gnuplot filename
+    gnuplot_name = filename
+
+    return
 
 
 def help_description():
