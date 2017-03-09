@@ -39,11 +39,12 @@ def main():
         transitions = get_transitions(file)
         print("Extracted {0} transitions.".format(len(transitions)))
 
-        # Format everything
+        # Format transitions and save them in file
         formatted_transitions = format_transitions(transitions)
+        write_transitions(formatted_transitions, filenames[i])
 
         # Setup gnuplot script
-        gnuplot_script = write_gnuplot(formatted_transitions,
+        gnuplot_script = write_gnuplot(transitions,
                                        plotting_parameters,
                                        filenames[i])
         print("")
@@ -106,16 +107,16 @@ def get_transitions(file):
 def format_transitions(transitions):
     """
         Reformat transitions into a usable list, e.g. as:
-            353.02    0.2667
-            294.12    0.0000
+                 353.02         0.2667
+                 294.12         0.0000
         In nm an unitless respectively.
     """
     # Convert cm-1 in nm
     transitions_converted = [[round(10E6/x[0], 2), round(x[1], 4)]
                              for x in transitions]
     # Format the list
-    transitions_formatted = ['{:.2f}'.format(x[0]).rjust(10) +
-                             '{:.4f}'.format(x[1]).rjust(10)
+    transitions_formatted = ['{:.2f}'.format(x[0]).rjust(15) +
+                             '{:.4f}'.format(x[1]).rjust(15)
                              for x in transitions_converted]
     return transitions_formatted
 
@@ -157,6 +158,17 @@ def write_gnuplot(transitions, parameters, filename):
 
     # return gnuplot filename
     return gnuplot_name
+
+
+def write_transitions(transitions, filename):
+    """
+        Write a file containing the formatted transisions
+    """
+    dat_name = os.path.splitext(filename)[0] + ".dat"
+    with open(dat_name, mode='w', newline="\n") as dat_file:
+        # Write transitions to file
+        dat_file.write("Wavelength (nm)   Osc Strength\n")
+        dat_file.write('\n'.join(transitions))
 
 
 def help_description():
