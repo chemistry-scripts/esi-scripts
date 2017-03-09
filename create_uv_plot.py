@@ -24,7 +24,7 @@ def main():
         extraction, exports the results in txt files.
     """
     # Get parameters from command line
-    list_of_raw_files, plotting_parameters = get_options()
+    list_of_raw_files, *plotting_parameters = get_options()
 
     # Parse all files
     filenames, parsed_files = parse_all_files(list_of_raw_files)
@@ -76,7 +76,8 @@ def get_options():
         sys.exit(2)
 
     # Test values for validity
-    return ([os.path.basename(x) for x in args.outFiles], args.sigma)
+    return ([os.path.basename(x) for x in args.outFiles], args.sigma,
+            args.window)
 
 
 def parse_all_files(files):
@@ -84,6 +85,7 @@ def parse_all_files(files):
         Parse all files in list of files
     """
     opened_files = [cclib.io.ccopen(f) for f in files]
+    print(files)
     filenames = [f.filename for f in opened_files]
     parsed_files = [f.parse() for f in opened_files]
     return (filenames, parsed_files)
@@ -123,18 +125,35 @@ def write_gnuplot(transitions, parameters, filename):
         Write gnuplot files
     """
 
+    print(parameters)
+
     # Process filename
     basename = os.path.splitext(filename)[0]
 
     # Initialize script
     gnuplot_script = []
     gnuplot_script.append("set terminal png\n")
-    gnuplot_script.append("set output {0}.png\n".format(basename))
+    gnuplot_script.append("set encoding utf8\n")
+    gnuplot_script.append('set output "{0}.png"\n'.format(basename))
+    gnuplot_script.append("\n")
 
-    # Fill
+    # Style parameters
+    gnuplot_script.append("set xrange [{0}]\n".format(parameters[1]))
+    gnuplot_script.append("set yrange [0:1]\n")
+    gnuplot_script.append("set style line 1 linecolor rgb '#0060ad' "
+                          "linetype 1 linewidth 2\n")
 
+    # Add useful functions
+    gnuplot_script.append("Band(nu,nu_i,sigma,osc_str) = 1.3062974 * 10**8")
+    gnuplot_script.append(" * osc_str / sigma * exp( -( (nu - nu_i)/sigma) )")
+
+    gnuplot_script.append("")
     # Write to file
     gnuplot_name = basename + ".plt"
+
+    with open(gnuplot_name, mode='w') as gnuplot_file:
+        # Write script to file
+        gnuplot_file.writelines(gnuplot_script)
 
     # return gnuplot filename
     return gnuplot_name
