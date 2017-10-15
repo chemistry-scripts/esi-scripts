@@ -112,7 +112,7 @@ def format_transitions(transitions):
         In nm an unitless respectively.
     """
     # Convert cm-1 in nm
-    transitions_converted = [[round(10E6/x[0], 2), round(x[1], 4)]
+    transitions_converted = [[round(10E6 / x[0], 2), round(x[1], 4)]
                              for x in transitions]
     # Format the list
     transitions_formatted = ['{:.2f}'.format(x[0]).rjust(15) +
