@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Script that extracts excitations from TDDFT calculations and plots the
-corresponding UV spectra.
+Script that extracts excitations from TDDFT calculations and plots the corresponding UV spectra.
 
 Last Update 2016-09-20 by Emmanuel Nicolas
 email emmanuel.nicolas-at-cea.fr
@@ -19,9 +18,10 @@ import cclib
 
 def main():
     """
-        Main function.
-        Retrieves names of files to extract, eventual parameters, starts
-        extraction, exports the results in txt files.
+    Do all the work, extracting data, computing spectra and exporting.
+
+    Retrieves names of files to extract, eventual parameters, starts
+    extraction, exports the results in txt files.
     """
     # Get parameters from command line
     list_of_raw_files, *plotting_parameters = get_options()
@@ -56,9 +56,7 @@ def main():
 
 
 def get_options():
-    """
-        Check command line options and accordingly set computation parameters
-    """
+    """Check command line options and accordingly set computation parameters."""
     parser = argparse.ArgumentParser(description=help_description(),
                                      epilog=help_epilog())
     parser.formatter_class = argparse.RawDescriptionHelpFormatter
@@ -82,9 +80,7 @@ def get_options():
 
 
 def parse_all_files(files):
-    """
-        Parse all files in list of files
-    """
+    """Parse all files in list of files."""
     opened_files = [cclib.io.ccopen(f) for f in files]
     print(files)
     filenames = [f.filename for f in opened_files]
@@ -94,9 +90,10 @@ def parse_all_files(files):
 
 def get_transitions(file):
     """
-        Extracts transitions from logfiles
-        Returns a list of lists, containing all [transition, oscillator
-        strength] couples, in cm-1 and unitless respectively.
+    Extract transitions from logfiles.
+
+    Returns a list of lists, containing all [transition, oscillator
+    strength] couples, in cm-1 and unitless respectively.
     """
     energies = file.etenergies
     oscillator_strengths = file.etoscs
@@ -106,10 +103,12 @@ def get_transitions(file):
 
 def format_transitions(transitions):
     """
-        Reformat transitions into a usable list, e.g. as:
-                 353.02         0.2667
-                 294.12         0.0000
-        In nm an unitless respectively.
+    Reformat transitions into a usable list.
+
+    Use them as:
+        353.02         0.2667
+        294.12         0.0000
+    In nm an unitless respectively.
     """
     # Convert cm-1 in nm
     transitions_converted = [[round(10E6 / x[0], 2), round(x[1], 4)]
@@ -122,10 +121,7 @@ def format_transitions(transitions):
 
 
 def write_gnuplot(transitions, parameters, filename):
-    """
-        Write gnuplot files
-    """
-
+    """Write gnuplot files."""
     print(parameters)
 
     # Process filename
@@ -161,9 +157,7 @@ def write_gnuplot(transitions, parameters, filename):
 
 
 def write_transitions(transitions, filename):
-    """
-        Write a file containing the formatted transisions
-    """
+    """Write a file containing the formatted transisions."""
     dat_name = os.path.splitext(filename)[0] + ".dat"
     with open(dat_name, mode='w', newline="\n") as dat_file:
         # Write transitions to file
@@ -172,16 +166,12 @@ def write_transitions(transitions, filename):
 
 
 def help_description():
-    """
-        Returns description of program for help message
-    """
+    """Return description of program for help message."""
     return ""
 
 
 def help_epilog():
-    """
-        Returns additionnal help message
-    """
+    """Return additionnal help message."""
     return ""
 
 
