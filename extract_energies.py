@@ -24,7 +24,7 @@ def main():
     runvalues = get_options()
     list_of_raw_files = runvalues['files']
     # Parse all files
-    parse_all_files(list_of_raw_files)
+    parse_all_files(list_of_raw_files, runvalues['full'])
 
 
 def get_options():
@@ -37,16 +37,21 @@ def get_options():
     parser.add_argument('logFiles', type=str, nargs='+',
                         help='The Gaussian log files from which to extract the relevant energies.')
 
+    parser.add_argument("-s", "--short", help="Shorthand print", action="store_true")
+
     try:
         args = parser.parse_args()
     except argparse.ArgumentError as error:
         print(str(error))  # Print something like "option -a not recognized"
         sys.exit(2)
 
-    runvalues = dict.fromkeys(['files'])
+    runvalues = dict.fromkeys(['files', 'full'])
     # Get values from parser
     runvalues['files'] = [os.path.basename(x) for x in args.logFiles]
-
+    if args.short:
+        runvalues['full'] = False
+    else:
+        runvalues['full'] = True
     # Test values for validity
     return runvalues
 
@@ -68,13 +73,16 @@ def extract_data(file):
     return energies
 
 
-def parse_all_files(files):
+def parse_all_files(files, full):
     """
         Parse all files in list of files
     """
     for file in files:
         data = extract_data(file)
-        print_energies(data, file)
+        if full:
+            print_energies(data, file)
+        else:
+            print_energies_short(data, file)
 
 
 def print_energies(data, filename):
@@ -84,6 +92,18 @@ def print_energies(data, filename):
     """
     name = os.path.splitext(filename)[0]
     printout = [name, data['scf_energy'], data['zpve'], data['energy'], data['enthalpy'], data['gibbsenergy']]
+    printout = [str(i) for i in printout]
+
+    print('\t'.join(printout))
+
+
+def print_energies_short(data, filename):
+    """
+        Print energies as a tab-separated single line with:
+        fileName -> SCF Energy -> ZPE Correction -> E correction -> H correction -> G Correction
+    """
+    name = os.path.splitext(filename)[0]
+    printout = [name, data['scf_energy'], data['enthalpy'], data['gibbsenergy']]
     printout = [str(i) for i in printout]
 
     print('\t'.join(printout))
