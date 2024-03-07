@@ -12,6 +12,7 @@ import argparse
 import sys
 import os
 import cclib
+from pathlib import Path
 
 
 def main():
@@ -47,7 +48,7 @@ def get_options():
 
     runvalues = dict.fromkeys(['files', 'full'])
     # Get values from parser
-    runvalues['files'] = [os.path.basename(x) for x in args.logFiles]
+    runvalues['files'] = [Path(x).resolve() for x in args.logFiles]
     if args.short:
         runvalues['full'] = False
     else:
@@ -90,8 +91,7 @@ def print_energies(data, filename):
         Print energies as a tab-separated single line with:
         fileName -> SCF Energy -> ZPE Correction -> E correction -> H correction -> G Correction
     """
-    name = os.path.splitext(filename)[0]
-    printout = [name, data['scf_energy'], data['zpve'], data['energy'], data['enthalpy'], data['gibbsenergy']]
+    printout = [filename.stem, data['scf_energy'], data['zpve'], data['energy'], data['enthalpy'], data['gibbsenergy']]
     printout = [str(i) for i in printout]
 
     print('\t'.join(printout))
@@ -102,8 +102,7 @@ def print_energies_short(data, filename):
         Print energies as a tab-separated single line with:
         fileName -> SCF Energy -> ZPE Correction -> E correction -> H correction -> G Correction
     """
-    name = os.path.splitext(filename)[0]
-    printout = [name, data['scf_energy'], data['enthalpy'], data['gibbsenergy']]
+    printout = [filename.stem, data['scf_energy'], data['enthalpy'], data['gibbsenergy']]
     printout = [str(i) for i in printout]
 
     print('\t'.join(printout))
