@@ -10,8 +10,8 @@ Requires Python3 to be installed.
 
 import argparse
 import sys
-import os
-import cclib
+# import os
+# import cclib
 from pathlib import Path
 
 
