@@ -44,13 +44,13 @@ def main():
         write_transitions(formatted_transitions, filenames[i])
 
         # Setup gnuplot script
-        gnuplot_script = write_gnuplot(transitions,
-                                       plotting_parameters,
-                                       filenames[i])
-        print("")
+        # gnuplot_script = write_gnuplot(transitions,
+        #                                plotting_parameters,
+        #                                filenames[i])
+        # print("")
 
         # Run gnuplot
-        os.system('gnuplot {0}'.format(shlex.quote(gnuplot_script)))
+        # os.system('gnuplot {0}'.format(shlex.quote(gnuplot_script)))
 
     print("All files have been generated.\n")
 
